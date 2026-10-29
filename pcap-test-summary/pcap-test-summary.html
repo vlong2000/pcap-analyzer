@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>PCAP 分析器 · 测试总结</title>
+<style>
+  :root {
+    --bg: #f6f7f9;
+    --card: #ffffff;
+    --text: #1f2430;
+    --muted: #6b7280;
+    --line: #e5e7eb;
+    --brand: #2563eb;
+    --ok: #0f9d58;
+    --warn: #b45309;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 14px/1.7 "Segoe UI", "Microsoft YaHei", system-ui, sans-serif;
+  }
+  .wrap { max-width: 1000px; margin: 0 auto; padding: 32px 24px 56px; }
+  header {
+    background: linear-gradient(135deg, #1e3a8a, #2563eb);
+    color: #fff; border-radius: 14px; padding: 28px 30px;
+  }
+  header h1 { margin: 0 0 6px; font-size: 26px; letter-spacing: .5px; }
+  header p { margin: 0; opacity: .9; }
+  .meta { margin-top: 14px; font-size: 12.5px; opacity: .85; }
+  .kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin: 22px 0; }
+  .kpi {
+    background: var(--card); border: 1px solid var(--line); border-radius: 12px;
+    padding: 16px 18px;
+  }
+  .kpi .num { font-size: 26px; font-weight: 700; color: var(--brand); line-height: 1.2; }
+  .kpi .label { color: var(--muted); font-size: 12.5px; margin-top: 4px; }
+  section {
+    background: var(--card); border: 1px solid var(--line); border-radius: 12px;
+    padding: 20px 22px; margin-bottom: 18px;
+  }
+  section h2 {
+    margin: 0 0 14px; font-size: 16px; padding-left: 10px; border-left: 4px solid var(--brand);
+  }
+  table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+  th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); }
+  th { color: var(--muted); font-weight: 600; font-size: 12.5px; }
+  td.num { text-align: right; font-variant-numeric: tabular-nums; }
+  .bar { height: 8px; border-radius: 4px; background: #dbeafe; position: relative; overflow: hidden; }
+  .bar > i { position: absolute; inset: 0 auto 0 0; background: var(--brand); border-radius: 4px; }
+  .ok { color: var(--ok); font-weight: 600; }
+  .tag {
+    display: inline-block; padding: 1px 8px; border-radius: 999px; font-size: 12px;
+    background: #ecfdf5; color: var(--ok); border: 1px solid #bbf7d0;
+  }
+  .tag.eq { background: #fffbeb; color: var(--warn); border-color: #fde68a; }
+  pre {
+    background: #0f172a; color: #e2e8f0; border-radius: 10px; padding: 14px 16px;
+    overflow-x: auto; font: 12.5px/1.65 Consolas, "Courier New", monospace; margin: 10px 0 0;
+  }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  ul { margin: 6px 0 0; padding-left: 20px; }
+  li { margin: 3px 0; }
+  .muted { color: var(--muted); font-size: 12.5px; }
+  footer { color: var(--muted); font-size: 12px; text-align: center; margin-top: 10px; }
+  @media (max-width: 760px) {
+    .kpis { grid-template-columns: repeat(2, 1fr); }
+    .grid2 { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>PCAP 协议分析器 · 测试总结</h1>
+  <p>回归、变异测试与功能覆盖<br>纯标准库实现，无第三方依赖</p>
+  <div class="meta">生成日期 2026-10-29　|　被测文件 pcap_analyzer.py　|　测试入口 test/scripts/run_all.py</div>
+</header>
+
+<div class="kpis">
+  <div class="kpi"><div class="num">498</div><div class="label">单元测试用例</div></div>
+  <div class="kpi"><div class="num">7</div><div class="label">用例模块</div></div>
+  <div class="kpi"><div class="num">69</div><div class="label">变异体（66 杀 + 3 等价）</div></div>
+  <div class="kpi"><div class="num">100%</div><div class="label">两组变异得分，遗漏 0</div></div>
+</div>
+
+<section>
+  <h2>一、用例分布</h2>
+  <table>
+    <thead><tr><th>模块</th><th>覆盖重点</th><th class="num">用例数</th><th style="width:32%">占比</th></tr></thead>
+    <tbody>
+      <tr><td>test_dump</td><td>载荷展示：hex/str/both、截断、偏移进位、参数化扫描</td><td class="num">123</td><td><div class="bar"><i style="width:100%"></i></div></td></tr>
+      <tr><td>test_l7_identify</td><td>端口映射优先、载荷特征兜底、TCP DNS 前缀识别</td><td class="num">95</td><td><div class="bar"><i style="width:77%"></i></div></td></tr>
+      <tr><td>test_mutation_tool</td><td>变异工具自身：清单、参数、得分、回滚、CLI、外部清单</td><td class="num">92</td><td><div class="bar"><i style="width:75%"></i></div></td></tr>
+      <tr><td>test_gtp</td><td>GTP-U/GTPv2-C 拆解、TEID 合并、序列号跳变</td><td class="num">82</td><td><div class="bar"><i style="width:67%"></i></div></td></tr>
+      <tr><td>test_reassembly</td><td>TCP DNS 流重组、IPv4/IPv6 分片、资源淘汰</td><td class="num">54</td><td><div class="bar"><i style="width:44%"></i></div></td></tr>
+      <tr><td>test_esp</td><td>ESP 头、NAT-T 三态、SPI 统计与重放检测</td><td class="num">41</td><td><div class="bar"><i style="width:33%"></i></div></td></tr>
+      <tr><td>test_resources</td><td>流数/字节上限、空闲超时、淘汰计数</td><td class="num">11</td><td><div class="bar"><i style="width:9%"></i></div></td></tr>
+    </tbody>
+  </table>
+  <p class="muted">单元测试全部在内存中构造帧，不依赖 test/pcaps 下的演示文件。</p>
+</section>
+
+<section>
+  <h2>二、变异测试结果</h2>
+  <table>
+    <thead><tr><th>组</th><th>目标模块</th><th class="num">变异体</th><th class="num">杀死</th><th class="num">等价存活</th><th class="num">遗漏</th><th class="num">得分</th></tr></thead>
+    <tbody>
+      <tr><td>dump</td><td>载荷展示（format_hex/format_text/format_payload/payload_lines）</td>
+          <td class="num">30</td><td class="num">29</td><td class="num">1</td><td class="num">0</td><td class="num ok">100%</td></tr>
+      <tr><td>core</td><td>GTP 合并、ESP/NAT-T、L7 识别、重组缓存</td>
+          <td class="num">39</td><td class="num">37</td><td class="num">2</td><td class="num">0</td><td class="num ok">100%</td></tr>
+    </tbody>
+  </table>
+  <p style="margin-top:12px"><span class="tag eq">等价变异</span> 行为与原文完全一致，存活属预期，不计入遗漏：</p>
+  <ul>
+    <li><b>M30</b>　提示条件 <code>len(shown) &lt; len(data)</code> 改 <code>!=</code>——<code>shown</code> 恒为前缀，两种写法等价</li>
+    <li><b>R05</b>　首片内容变化时不预先重建——<code>put</code> 内部冲突分支同样执行 close + 重建</li>
+    <li><b>R07</b>　已交付序号不做 32 位截断——掩码在 <code>_seq_delta</code> 内部已完成</li>
+  </ul>
+  <p class="muted">core 组首轮曾暴露 6 个真实缺口（GTP 缓存满、IPv6 方括号标签、NAT-T 单字节非 0xFF、ESP 回退后重放计数、重组字节闭区间、SIP 两段式反例），均已补用例并复跑至 100%。</p>
+</section>
+
+<section>
+  <h2>三、功能覆盖</h2>
+  <div class="grid2">
+    <div>
+      <p><b>解析层次</b></p>
+      <ul>
+        <li>pcap（大小端自动识别）/ pcapng，链路类型 EN10MB</li>
+        <li>Ethernet、ARP、IPv4、IPv6（扩展头链、分片重组）</li>
+        <li>TCP、UDP、SCTP（chunk/PPID）、ESP（仅头）、NAT-T</li>
+        <li>GTP-U（G-PDU 内层拆解 + 按 TEID 合并）、GTPv2-C</li>
+      </ul>
+    </div>
+    <div>
+      <p><b>输出能力</b></p>
+      <ul>
+        <li>统计报告：协议分布、Top 端口、流、TCP flags、SCTP chunk</li>
+        <li>ESP SPI 分布（序列号回退标注「疑似重放/乱序」）</li>
+        <li>GTP-U TEID 合并：包数、合并量、截断、序列号范围、内层流</li>
+        <li>载荷 dump：hex/str/both，可配 <code>--dump-bytes</code></li>
+        <li>JSON：<code>packets</code> / <code>gtp_tunnels</code> / 聚合统计</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>四、样例：统计报告</h2>
+<pre>==============================================================================
+文件     : dns_test.pcap
+容器格式 : pcap (小端, 微秒)
+链路类型 : 1 / EN10MB (Ethernet)
+包总数   : 14    总字节 : 1.2 KB
+时间范围 : 2023-11-15 06:13:20.000 ~ 2023-11-15 06:13:33.000   (跨度 13.000 s)
+==============================================================================
+
+网络层协议分布
+  IPv4        14  100.00%  ############################
+
+传输层协议分布
+  DNS         14  100.00%  ############################
+
+目的端口 Top 15
+  DNS/dst=53            7   50.00%  ##############</pre>
+</section>
+
+<section>
+  <h2>五、样例：GTP-U 按 TEID 合并 + 载荷 dump</h2>
+<pre>GTP-U TEID 合并输出 (7 条隧道)
+  TEID=0x00000006 packets=3 merged=168/168 B
+    内层协议: UDP(3)
+    流: UDP [2a02:9b0:6e:edba:862:3470:4ae0:7c8c]:7000->[2a02:ce0:7:c000::c185]:8000 (2)
+    0000  60 00 00 00 00 10 2c 40 2a 02 09 b0 00 6e ed ba  |`.....,@*....n..|
+    0000  `.....,@*....n..
+  TEID=0x00000001 packets=2 merged=132/132 B
+    内层协议: TCP(2)
+    流: TCP [2a02:9b0:6e:edba:862:3470:4ae0:7c8c]:5555->[2a02:ce0:7:c000::c185]:443 (2)</pre>
+  <p class="muted">命令：<code>python pcap_analyzer.py test\pcaps\gtp_ipv6_frag_test.pcap --dump both --dump-bytes 16</code></p>
+</section>
+
+<section>
+  <h2>六、运行方式</h2>
+<pre>python test\scripts\run_all.py                  # 一键回归：7 模块 498 例，约 13s
+python test\scripts\run_all.py --mutation dump  # 追加 dump 组变异扫描
+python test\scripts\run_all.py --mutation core  # 追加 core 组（约 3 分钟）
+python test\scripts\mutation_dump.py --list     # 查看变异清单
+python test\scripts\mutation_dump.py --target pcap_analyzer.py `
+    --tests test_gtp,test_esp --spec my_mutants.json   # 自定义目标与清单</pre>
+  <p class="muted">退出码：<code>0</code> 全部通过；<code>1</code> 存在失败；<code>2</code> 基线用例失败。</p>
+</section>
+
+<section>
+  <h2>七、已知限制</h2>
+  <ul>
+    <li><b>ESP 只解析头</b>：SPI、序列号可读；Padding / Next Header / ICV 位于加密域，密文按原样 dump，需密钥解密。</li>
+    <li><b>不做通用 TCP 全流重组</b>：仅 DNS 的 2 字节长度前缀流，其余应用层按包级特征识别。</li>
+    <li><b>资源上限</b>：流数、单流字节数、空闲超时受常量约束，超限流被淘汰并计入资源统计。</li>
+  </ul>
+</section>
+
+<footer>PCAP 协议分析器 · 测试总结 · 2026-10-29</footer>
+</div>
+</body>
+</html>
